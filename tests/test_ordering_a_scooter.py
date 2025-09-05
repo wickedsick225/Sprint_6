@@ -37,13 +37,12 @@ class TestOrderScooter:
 
         with allure.step("Проверяем, что заказ успешно оформлен"):
             success_message = order_page.get_success_message()
-            allure.attach(success_message, name="Текст модалки", attachment_type=allure.attachment_type.TEXT)
-            assert "Заказ оформлен" in success_message
+            assert "Заказ оформлен" in success_message, f"Ожидали 'Заказ оформлен', получили: {success_message}"
 
         with allure.step("Проверяем, что отображается номер заказа"):
             order_number = order_page.get_order_number()
-            allure.attach(order_number, name="Номер заказа", attachment_type=allure.attachment_type.TEXT)
-            assert "Номер заказа" in order_number
+            assert "Номер заказа" in order_number, f"Ожидали 'Номер заказа', получили: {order_number}"
 
-        with allure.step("Кликаем на кнопку 'Посмотреть статус'"):
-            order_page.click_view_status()
+        with allure.step("Проверяем экран статуса после клика на 'Посмотреть статус'"):
+            order_page.view_status()
+            assert "track" in driver.current_url, "После клика на 'Посмотреть статус' не открылся экран статуса заказа"

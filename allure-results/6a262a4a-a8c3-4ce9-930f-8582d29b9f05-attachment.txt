@@ -1,0 +1,1 @@
+https://sso.passport.yandex.ru/push?uuid=1e6d7d98-78e5-47b8-b1fe-292af5d25379&retpath=https%3A%2F%2Fdzen.ru%2F%3Fyredirect%3Dtrue%26is_autologin_ya%3Dtrue

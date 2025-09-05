@@ -1,32 +1,33 @@
-import pytest
+# tests/test_logo.py
 import allure
-from selenium.webdriver.support.ui import WebDriverWait
-from locators.logo_locators import LogoLocators
-from pages.base_urls import URLS
+from pages.logo_page import LogoPage
 
-@pytest.mark.parametrize("logo_locator, expected_domain, new_window", [
-    (LogoLocators.scooter_logo, "qa-scooter.praktikum-services.ru", False),
-    (LogoLocators.yandex_logo, "dzen.ru", True),
-])
+@allure.feature("Переход по логотипам")
+class TestLogos:
 
+    @allure.title("Проверка: клик по логотипу 'Самокат' ведет на главную страницу")
+    def test_scooter_logo_redirects_to_main_page(self, driver):
+        page = LogoPage(driver)
 
-@allure.title("Проверка перехода по логотипам")
-def test_logos(driver, logo_locator, expected_domain, new_window):
-    with allure.step("Открываем главную страницу сервиса"):
-        driver.get(URLS.BASE_URL)
+        page.open_main_page()
+        page.click_scooter_logo()
 
-    with allure.step(f"Кликаем по логотипу и проверяем переход на {expected_domain}"):
-        driver.find_element(*logo_locator).click()
+        current_url = page.get_current_url()
+        allure.attach(current_url, name="Фактический URL", attachment_type=allure.attachment_type.TEXT)
 
-        if new_window:
-            with allure.step("Ожидаем открытия нового окна и переключаемся в него"):
-                WebDriverWait(driver, 10).until(lambda d: len(d.window_handles) > 1)
-                driver.switch_to.window(driver.window_handles[-1])
+        assert "qa-scooter.praktikum-services.ru" in current_url, \
+            f"Ожидали переход на qa-scooter.praktikum-services.ru, получили {current_url}"
 
-        with allure.step("Ждём пока URL обновится и проверяем домен"):
-            WebDriverWait(driver, 10).until(lambda d: expected_domain in d.current_url)
-            current_url = driver.current_url
-            allure.attach(current_url, name="Фактический URL", attachment_type=allure.attachment_type.TEXT)
+    @allure.title("Проверка: клик по логотипу 'Яндекс' ведет на Dzen (новое окно)")
+    def test_yandex_logo_redirects_to_dzen(self, driver):
+        page = LogoPage(driver)
 
-    with allure.step("Проверка: фактический URL содержит ожидаемый домен"):
-        assert expected_domain in current_url, f"Ожидали домен {expected_domain}, получили {current_url}"
+        page.open_main_page()
+        page.click_yandex_logo()
+        page.switch_to_new_window("dzen.ru")
+
+        current_url = page.get_current_url()
+        allure.attach(current_url, name="Фактический URL", attachment_type=allure.attachment_type.TEXT)
+
+        assert "dzen.ru" in current_url, \
+            f"Ожидали переход на dzen.ru, получили {current_url}"
