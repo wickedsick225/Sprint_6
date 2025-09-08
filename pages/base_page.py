@@ -1,6 +1,7 @@
 import allure
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
 
 class BasePage:
     def __init__(self, driver, timeout=10):
@@ -56,3 +57,28 @@ class BasePage:
         if timeout is None:
             timeout = self.timeout
         return WebDriverWait(self.driver, timeout).until(condition_func)
+
+    @allure.step("Получаем текущий URL")
+    def get_current_url(self):
+        return self.driver.current_url
+    
+    @allure.step("Получаем список окон")
+    def get_window_handles(self):
+        return self.driver.window_handles
+
+    @allure.step("Переключаемся на окно с индексом {index}")
+    def switch_to_window(self, index=-1):
+        self.driver.switch_to.window(self.driver.window_handles[index])
+
+    @allure.step("Вводим текст '{value}' в элемент {locator}")
+    def send_keys(self, locator, value, timeout=None):
+        element = self.find_element(locator, timeout)
+        element.send_keys(value)
+        return element
+    
+        
+    @allure.step("Нажимаем клавишу {key} в элементе {locator}")
+    def press_key(self, locator, key, timeout=None):
+        element = self.find_element(locator, timeout)
+        element.send_keys(key)
+        return element

@@ -21,30 +21,30 @@ class OrderPage(BasePage):
             try:
                 self.click(OrderLocators.COOKIES_ACCEPT_BUTTON, timeout=3)
             except TimeoutException:
-                # Кнопка cookies не появилась — это ок
                 pass
 
         with allure.step("Вводим имя, фамилию и адрес"):
-            self.find_element(OrderLocators.NAME_INPUT).send_keys(name)
-            self.find_element(OrderLocators.SURNAME_INPUT).send_keys(surname)
-            self.find_element(OrderLocators.ADDRESS_INPUT).send_keys(address)
+
+            self.send_keys(OrderLocators.NAME_INPUT, name)
+            self.send_keys(OrderLocators.SURNAME_INPUT, surname)
+            self.send_keys(OrderLocators.ADDRESS_INPUT, address)
 
         with allure.step(f"Выбираем станцию метро: {metro}"):
-            metro_input = self.find_element(OrderLocators.METRO_INPUT)
-            metro_input.send_keys(metro)
+            self.send_keys(OrderLocators.METRO_INPUT, metro)
+
             try:
                 metro_option = self.find_element(
                     (By.XPATH, f"//div[contains(@class,'select-search__option') and text()='{metro}']"), 
                     timeout=5
                 )
-                metro_option.click()
+                self.click((By.XPATH, f"//div[contains(@class,'select-search__option') and text()='{metro}']"))
             except TimeoutException:
-                fallback_option = self.find_element((By.CSS_SELECTOR, ".select-search__option"), timeout=5)
-                fallback_option.click()
-            metro_input.send_keys(Keys.ESCAPE)
+                self.click((By.CSS_SELECTOR, ".select-search__option"), timeout=5)
+
+            self.press_key(OrderLocators.METRO_INPUT, Keys.ESCAPE)
 
         with allure.step("Вводим телефон и продолжаем оформление"):
-            self.find_element(OrderLocators.PHONE_INPUT).send_keys(phone)
+            self.send_keys(OrderLocators.PHONE_INPUT, phone)
             self.click(OrderLocators.CONTINUE_BTN)
 
     @allure.step("Заполняем данные аренды: дата {delivery_date}, срок {rental_period}, цвет {color}, комментарий {comment}")
@@ -71,7 +71,7 @@ class OrderPage(BasePage):
 
         if comment:
             with allure.step(f"Добавляем комментарий: {comment}"):
-                self.find_element(OrderLocators.COMMENT_INPUT).send_keys(comment)
+                self.send_keys(OrderLocators.COMMENT_INPUT, comment)
 
         self.click(OrderLocators.ORDER_CONFIRM_BUTTON)
 

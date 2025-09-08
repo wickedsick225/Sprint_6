@@ -45,4 +45,5 @@ class TestOrderScooter:
 
         with allure.step("Проверяем экран статуса после клика на 'Посмотреть статус'"):
             order_page.view_status()
-            assert "track" in driver.current_url, "После клика на 'Посмотреть статус' не открылся экран статуса заказа"
+            current_url = order_page.get_current_url()
+            assert "track" in current_url, "После клика на 'Посмотреть статус' не открылся экран статуса заказа"

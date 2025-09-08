@@ -28,6 +28,6 @@ class TestLogos:
 
         current_url = page.get_current_url()
         allure.attach(current_url, name="Фактический URL", attachment_type=allure.attachment_type.TEXT)
-
+    
         assert "dzen.ru" in current_url, \
             f"Ожидали переход на dzen.ru, получили {current_url}"

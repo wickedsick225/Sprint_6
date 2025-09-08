@@ -21,11 +21,6 @@ class LogoPage(BasePage):
         self.wait_for_clickable(LogoLocators.yandex_logo).click()
 
     def switch_to_new_window(self, expected_url_substring, timeout=10):
-        self.wait_for_condition(lambda d: len(d.window_handles) > 1, timeout=timeout)
-        self.driver.switch_to.window(self.driver.window_handles[-1])
-        self.wait_for_condition(lambda d: expected_url_substring in d.current_url, timeout=timeout)
-
-
-    @allure.step("Получаем текущий URL")
-    def get_current_url(self):
-        return self.driver.current_url
+        self.wait_for_condition(lambda d: len(self.get_window_handles()) > 1, timeout=timeout)
+        self.switch_to_window(-1)
+        self.wait_for_condition(lambda d: expected_url_substring in self.get_current_url(), timeout=timeout)
